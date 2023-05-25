@@ -3,7 +3,6 @@ module ClaseControl
 export bode, fdos
 
 using Plots, LaTeXStrings, DSP, Roots, Interpolations
-plotly()
 
 struct Bode
     fig

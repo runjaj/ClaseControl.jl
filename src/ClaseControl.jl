@@ -3,6 +3,7 @@ module ClaseControl
 export bode, fdos
 
 using Plots, LaTeXStrings, DSP, Roots, Interpolations
+plotly()
 
 struct Bode
     fig
@@ -29,7 +30,7 @@ Parámetros:
 
 _Ejemplo:_
 
-`salida = bode(20*(s+1)/s/(s+5)/(s^2+2s+10); wmax=10, co=true, ra1=true)`
+`salida = bode(s->20*(s+1)/s/(s+5)/(s^2+2s+10); wmax=10, co=true, ra1=true)`
 
 Para los resultados:
 

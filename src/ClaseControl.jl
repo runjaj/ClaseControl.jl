@@ -2,7 +2,7 @@ module ClaseControl
 
 export bode
 
-using Plots, LaTeXStrings, DSP, Roots, Interpolations, SymPy
+using Plots, DSP, Roots, Interpolations, SymPy
 
 struct Bode
     fig
@@ -84,12 +84,14 @@ function bode(Gol::Function; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=fals
     # Encuentra el valor mínimo de la escala del eje y 
     RAminscale = ylims(RAplot)[1]
     if co
-        plot!([wmin, wco, wco],[RAco, RAco, RAminscale], color=:red, 
-            annotations= (wco, float(RAco), text(L"w_{co}, RA_{co}", pointsize=10, :left)))
+        plot!([wmin, wco, wco],[RAco, RAco, RAminscale], color=:red)
+        xticks!(([xticks(RAplot)[1][1]; wco], [xticks(RAplot)[1][2]; "ωco"]))
+        #yticks!(([yticks(RAplot)[1][1]; 1], [yticks(RAplot)[1][2]; "1"]))
     end
     if ra1
-        plot!([wmin, w1, w1], [RA1, RA1, RAminscale], color=:lime, 
-            annotations= (w1, float(RA1), text(L"w_1, 1", pointsize=10, :left)))
+        plot!([wmin, w1, w1], [RA1, RA1, RAminscale], color=:lime)
+        xticks!(([xticks(RAplot)[1][1]; w1], [xticks(RAplot)[1][2]; "ω₁"]))
+        yticks!(([yticks(RAplot)[1][1]; RAco], [yticks(RAplot)[1][2]; "RAco"])) 
     end
     phiplot = plot(wlin, phidata*180/pi, xscale=:log10,
         legend=false, lw=2, xlabel="ω", ylabel="φ",
@@ -97,12 +99,14 @@ function bode(Gol::Function; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=fals
     phiminscale = ylims(phiplot)[1]
     if co
         plot!([wmin, wco, wco],[phico*180/pi, phico*180/pi, phiminscale],
-            color=:red, annotations= (wco ,float(phico*180/pi), text(L"w_{co}, -180\degree",
-                    pointsize=10, :left)))
+            color=:red)
+        xticks!(([xticks(phiplot)[1][1]; wco], [xticks(phiplot)[1][2]; "ωco"]))
+        yticks!(([yticks(phiplot)[1][1]; -180], [yticks(phiplot)[1][2]; "-180°"]))
     end
     if ra1
-        plot!([wmin, w1, w1], [phi1*180/pi, phi1*180/pi, phiminscale], color=:lime,
-        annotations = (w1, float(phi1*180/pi), text(L"w_1, \phi_1", pointsize=10, :left)))
+        plot!([wmin, w1, w1], [phi1*180/pi, phi1*180/pi, phiminscale], color=:lime)
+        xticks!(([xticks(phiplot)[1][1]; w1], [xticks(phiplot)[1][2]; "ω₁"]))
+        yticks!(([yticks(phiplot)[1][1]; phi1*180/pi], [yticks(phiplot)[1][2]; "φ₁"]))
     end
     
     fig = plot(RAplot, phiplot, layout=grid(2,1), show=true)

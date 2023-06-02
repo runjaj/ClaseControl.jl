@@ -1,8 +1,8 @@
 module ClaseControl
 
-export bode, fdos
+export bode
 
-using Plots, LaTeXStrings, DSP, Roots, Interpolations
+using Plots, LaTeXStrings, DSP, Roots, Interpolations, SymPy
 
 struct Bode
     fig
@@ -13,7 +13,7 @@ struct Bode
 end
 
 """
-**bode(Gol; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=false, RAlabel="RA")**
+    **bode(Gol; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=false, RAlabel="RA")**
 
 Representación del diagrama de Bode de la función de transferencia _Gol_.
 
@@ -38,7 +38,7 @@ Para los resultados:
     para la frecuencia de cruce
 - `salida.w1` y `salida.phi1`: Frecuencia para RA = 1 y desfase para RA=1
 """
-function bode(Gol; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=false, RAlabel="RA")
+function bode(Gol::Function; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=false, RAlabel="RA")
     wco = nothing
     RAco = nothing
     w1 = nothing
@@ -110,6 +110,12 @@ function bode(Gol; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=false, RAlabel
     return output
 end
 
-
+function bode(f::Sym; kwargs...)
+	if length(f.free_symbols) > 1
+		error("Demasiadas variables: $(f.free_symbols)")
+	else
+		bode(lambdify(f); kwargs...)
+	end
+end
 
 end  # fin del módulo

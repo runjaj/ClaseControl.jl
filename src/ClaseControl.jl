@@ -86,12 +86,12 @@ function bode(Gol::Function; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=fals
     if co
         plot!([wmin, wco, wco],[RAco, RAco, RAminscale], color=:red)
         xticks!(([xticks(RAplot)[1][1]; wco], [xticks(RAplot)[1][2]; "ωco"]))
-        #yticks!(([yticks(RAplot)[1][1]; 1], [yticks(RAplot)[1][2]; "1"]))
+        yticks!(([yticks(RAplot)[1][1]; RAco], [yticks(RAplot)[1][2]; "RAco         "]))
     end
     if ra1
         plot!([wmin, w1, w1], [RA1, RA1, RAminscale], color=:lime)
         xticks!(([xticks(RAplot)[1][1]; w1], [xticks(RAplot)[1][2]; "ω₁"]))
-        yticks!(([yticks(RAplot)[1][1]; RAco], [yticks(RAplot)[1][2]; "RAco"])) 
+        yticks!(([yticks(RAplot)[1][1]; 1], [yticks(RAplot)[1][2]; "1         "])) 
     end
     phiplot = plot(wlin, phidata*180/pi, xscale=:log10,
         legend=false, lw=2, xlabel="ω", ylabel="φ",
@@ -101,12 +101,12 @@ function bode(Gol::Function; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=fals
         plot!([wmin, wco, wco],[phico*180/pi, phico*180/pi, phiminscale],
             color=:red)
         xticks!(([xticks(phiplot)[1][1]; wco], [xticks(phiplot)[1][2]; "ωco"]))
-        yticks!(([yticks(phiplot)[1][1]; -180], [yticks(phiplot)[1][2]; "-180°"]))
+        yticks!(([yticks(phiplot)[1][1]; -180], [yticks(phiplot)[1][2]; "-180          "]))
     end
     if ra1
         plot!([wmin, w1, w1], [phi1*180/pi, phi1*180/pi, phiminscale], color=:lime)
         xticks!(([xticks(phiplot)[1][1]; w1], [xticks(phiplot)[1][2]; "ω₁"]))
-        yticks!(([yticks(phiplot)[1][1]; phi1*180/pi], [yticks(phiplot)[1][2]; "φ₁"]))
+        yticks!(([yticks(phiplot)[1][1]; phi1*180/pi], [yticks(phiplot)[1][2]; "φ₁          "]))
     end
     
     fig = plot(RAplot, phiplot, layout=grid(2,1), show=true)

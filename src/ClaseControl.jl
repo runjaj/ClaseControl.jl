@@ -44,8 +44,8 @@ function bode(Gol::Function; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=fals
     w1 = nothing
     phi1 = nothing
 
-    RAol(w) = sqrt(real(Gol(im*w))^2+imag(Gol(im*w))^2)
-    phiol(w) = atan(imag(Gol(im*w)), real(Gol(im*w)))
+    RAol(w) = abs(Gol(im*w))
+    phiol(w) = angle(Gol(im*w))
     
     # Hace una lista equiespaciada para los valores del log10 del desfase
     wlog = range(log10(wmin), log10(wmax); length=points)
@@ -114,12 +114,12 @@ function bode(Gol::Function; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=fals
     return output
 end
 
-function bode(f::Sym; kwargs...)
-	if length(f.free_symbols) > 1
-		error("Demasiadas variables: $(f.free_symbols)")
-	else
-		bode(lambdify(f); kwargs...)
-	end
-end
+#function bode(f::Sym; kwargs...)
+#	if length(f.free_symbols) > 1
+#		error("Demasiadas variables: $(f.free_symbols)")
+#	else
+#		bode(lambdify(f); kwargs...)
+#	end
+#end
 
 end  # fin del módulo

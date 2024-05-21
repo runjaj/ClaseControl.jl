@@ -2,7 +2,7 @@ module ClaseControl
 
 export bode
 
-using Plots, DSP, Roots, Interpolations, SymPy
+using Plots, DSP, Roots, Interpolations
 
 struct Bode
     fig

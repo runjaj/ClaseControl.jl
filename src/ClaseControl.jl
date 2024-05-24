@@ -2,7 +2,7 @@ module ClaseControl
 
 export bode
 
-using DSP, Roots, Interpolations, PlotlyJS
+using DSP, Roots, Interpolations, PlutoPlotly
 
 struct Bode
     fig

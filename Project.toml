@@ -6,7 +6,7 @@ version = "0.1.5-DEV"
 [deps]
 DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
 Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
-PlotlyJS = "f0f68f2c-4968-5e81-91da-67840de0976a"
+PlutoPlotly = "8e989ff0-3d88-8e9f-f020-2b208a939ff0"
 Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"
 
 [compat]

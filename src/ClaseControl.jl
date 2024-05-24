@@ -2,7 +2,7 @@ module ClaseControl
 
 export bode
 
-using Plots, DSP, Roots, Interpolations
+using DSP, Roots, Interpolations, PlotlyJS
 
 struct Bode
     fig
@@ -43,6 +43,11 @@ function bode(Gol::Function; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=fals
     RAco = nothing
     w1 = nothing
     phi1 = nothing
+    
+    trace_RAco = scatter()
+    trace_RAra1 = scatter()
+    trace_phico = scatter()
+    trace_phira1 = scatter()
 
     RAol(w) = abs(Gol(im*w))
     phiol(w) = angle(Gol(im*w))
@@ -51,6 +56,9 @@ function bode(Gol::Function; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=fals
     wlog = range(log10(wmin), log10(wmax); length=points)
     # Genera la versión lineal
     wlin = 10 .^wlog
+    
+    # Cálculo de los datos de RA para los valores de frecuencia
+    RAdata = RAol.(wlin)
     
     # Calcula los datos de desfase para los valores de frecuencia
     phidata = phiol.(wlin)
@@ -78,38 +86,49 @@ function bode(Gol::Function; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=fals
 
     # Representación del diagrama de Bode
     #l = @layout [a; b]
-    RAplot = plot(RAol, wmin, wmax, xscale=:log10, yscale=:log10,
-        legend=false, lw=2, xlabel="", ylabel=RAlabel,
-        minorticks=:auto)
+    trace_RA = scatter(; x=wlin, y=RAdata)
     # Encuentra el valor mínimo de la escala del eje y 
-    RAminscale = ylims(RAplot)[1]
+    RAminscale = minimum(RAdata)
+
     if co
-        plot!([wmin, wco, wco],[RAco, RAco, RAminscale], color=:red)
-        xticks!(([xticks(RAplot)[1][1]; wco], [xticks(RAplot)[1][2]; "ωco"]))
-        yticks!(([yticks(RAplot)[1][1]; RAco], [yticks(RAplot)[1][2]; "RAco         "]))
+        trace_RAco = scatter(; x=[wmin, wco, wco], y=[RAco, RAco, RAminscale],
+                            mode="markers+lines+text",
+                            text=["RAco", "", "ωco"],
+                            textposition="left")
+        trace_RAco["maker.color"] = "red"
     end
     if ra1
-        plot!([wmin, w1, w1], [RA1, RA1, RAminscale], color=:lime)
-        xticks!(([xticks(RAplot)[1][1]; w1], [xticks(RAplot)[1][2]; "ω₁"]))
-        yticks!(([yticks(RAplot)[1][1]; 1], [yticks(RAplot)[1][2]; "1         "])) 
+        trace_RAra1 = scatter(; x=[wmin, w1, w1], y=[RA1, RA1, RAminscale],
+                        mode="markers+lines+text",
+                        text=["1", "", "ω₁"],
+                        textposition="left")
+        trace_RAra1["marker.color"] = "lime"
     end
-    phiplot = plot(wlin, phidata*180/pi, xscale=:log10,
-        legend=false, lw=2, xlabel="ω", ylabel="φ",
-        minorticks=:auto)
-    phiminscale = ylims(phiplot)[1]
+    trace_phi = scatter(; x=wlin, y=phidata*180/pi)
+    phiminscale = minimum(phidata)
     if co
-        plot!([wmin, wco, wco],[phico*180/pi, phico*180/pi, phiminscale],
-            color=:red)
-        xticks!(([xticks(phiplot)[1][1]; wco], [xticks(phiplot)[1][2]; "ωco"]))
-        yticks!(([yticks(phiplot)[1][1]; -180], [yticks(phiplot)[1][2]; "-180          "]))
+        trace_phico = scatter(; x=[wmin, wco, wco],
+                        y= [phico*180/pi, phico*180/pi, phiminscale],
+                        mode="markers+lines+text",
+                        text=["-180°", "", "wco"],
+                        textposition="left")
+        trace_phico["marker.color"] = "red"
     end
     if ra1
-        plot!([wmin, w1, w1], [phi1*180/pi, phi1*180/pi, phiminscale], color=:lime)
-        xticks!(([xticks(phiplot)[1][1]; w1], [xticks(phiplot)[1][2]; "ω₁"]))
-        yticks!(([yticks(phiplot)[1][1]; phi1*180/pi], [yticks(phiplot)[1][2]; "φ₁          "]))
+        trace_phira1 = scatter(; x=[wmin, w1, w1], y=[phi1*180/pi, phi1*180/pi, phiminscale],
+                        mode="markers+lines+text",
+                        text=["φ₁", "", "ω₁"],
+                        textposition="left")
+        trace_phira1["marker.color"] = "lime"
     end
     
-    fig = plot(RAplot, phiplot, layout=grid(2,1), show=true)
+    RAplot = plot([trace_RA, trace_RAco, trace_RAra1], Layout(xaxis_type="log",
+                yaxis_type="log", xaxis_title="ω", yaxis_title=RAlabel))
+    phiplot = plot([trace_phi, trace_phico, trace_phira1], Layout(xaxis_type="log",
+                xaxis_title="ω", yaxis_title="φ"))
+    
+    fig = [RAplot; phiplot]
+    fig = relayout(fig, showlegend=false)
     output = Bode(fig, wco, RAco, w1, phi1)
     return output
 end

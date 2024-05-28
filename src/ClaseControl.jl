@@ -13,7 +13,7 @@ struct Bode
 end
 
 """
-    **bode(Gol; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=false, RAlabel="RA")**
+bode(Gol; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=false, RAlabel="RA")
 
 Representación del diagrama de Bode de la función de transferencia _Gol_.
 
@@ -93,15 +93,19 @@ function bode(Gol::Function; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=fals
     if co
         trace_RAco = scatter(; x=[wmin, wco, wco], y=[RAco, RAco, RAminscale],
                             mode="markers+lines+text",
-                            text=["RAco", "", "ωco"],
-                            textposition="left")
+                            text=["RA<sub>co</sub>", "", "ω<sub>co</sub>"],
+                            textposition="left",
+                            hoverinfo="text",
+                            hovertext=["RA<sub>co</sub> = $(round(RAco; sigdigits=3))", "ω<sub>co</sub> = $(round(wco; sigdigits=3)), RA<sub>co</sub> = $(round(RAco; sigdigits=3))", "ω<sub>co</sub> = $(round(wco; sigdigits=3))"])
         trace_RAco["maker.color"] = "red"
     end
     if ra1
         trace_RAra1 = scatter(; x=[wmin, w1, w1], y=[RA1, RA1, RAminscale],
                         mode="markers+lines+text",
                         text=["1", "", "ω₁"],
-                        textposition="left")
+                        textposition="left",
+                        hoverinfo="text",
+                        hovertext=["RA = 1", "RA = 1, ω₁ = $(round(w1; sigdigits=3))", "ω₁ = $(round(w1; sigdigits=3))"])
         trace_RAra1["marker.color"] = "lime"
     end
     trace_phi = scatter(; x=wlin, y=phidata*180/pi)
@@ -110,15 +114,20 @@ function bode(Gol::Function; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=fals
         trace_phico = scatter(; x=[wmin, wco, wco],
                         y= [phico*180/pi, phico*180/pi, phiminscale],
                         mode="markers+lines+text",
-                        text=["-180°", "", "wco"],
-                        textposition="left")
+                        text=["-180°", "", "ω<sub>co</sub>"],
+                        textposition=["left", "", "right"],
+                        hoverinfo="text",
+                        hovertext=["φ<sub>co</sub> = -180°", "φ<sub>co</sub> = -180°, ω<sub>co</sub> = $(round(wco; sigdigits=3))", "ω<sub>co</sub> = $(round(wco; sigdigits=3))"])
         trace_phico["marker.color"] = "red"
     end
     if ra1
-        trace_phira1 = scatter(; x=[wmin, w1, w1], y=[phi1*180/pi, phi1*180/pi, phiminscale],
+        trace_phira1 = scatter(; x=[wmin, w1, w1],
+                        y=[phi1*180/pi, phi1*180/pi, phiminscale],
                         mode="markers+lines+text",
                         text=["φ₁", "", "ω₁"],
-                        textposition="left")
+                        textposition="left",
+                        hoverinfo="text",
+                        hovertext=["φ₁ = $(round(phi1*180/pi; sigdigits=3))°", "φ₁ = $(round(phi1*180/pi; sigdigits=3))°, ω₁ = $(round(w1; sigdigits=3))", "ω₁ = $(round(w1; sigdigits=3))"])
         trace_phira1["marker.color"] = "lime"
     end
     

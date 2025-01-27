@@ -7,7 +7,7 @@ using DSP, Roots, Interpolations
 try Pluto
     using PlutoPlotly
 catch
-    using Plotly
+    using PlotlyJS
 end
 
 struct Bode
@@ -55,6 +55,10 @@ function bode(Gol::Function; wmin=1e-1, wmax=1e1, points=100, co=false, ra1=fals
     trace_phico = scatter()
     trace_phira1 = scatter()
 
+#    if Gol isa Sym
+#        Gol = lambdify(Gol)
+#    end
+    
     RAol(w) = abs(Gol(im*w))
     phiol(w) = angle(Gol(im*w))
     

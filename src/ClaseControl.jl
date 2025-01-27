@@ -2,7 +2,13 @@ module ClaseControl
 
 export bode
 
-using DSP, Roots, Interpolations, PlutoPlotly
+using DSP, Roots, Interpolations
+
+try Pluto
+    using PlutoPlotly
+catch
+    using Plotly
+end
 
 struct Bode
     fig

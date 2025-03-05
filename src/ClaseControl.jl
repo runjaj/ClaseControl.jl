@@ -4,7 +4,7 @@ export bode
 
 using DSP, Roots, Interpolations
 
-try Pluto
+try @isdefined PlutoRunner
     using PlutoPlotly
 catch
     using PlotlyJS

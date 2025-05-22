@@ -4,9 +4,9 @@ export bode
 
 using DSP, Roots, Interpolations
 
-try @isdefined PlutoRunner
+if @isdefined PlutoRunner
     using PlutoPlotly
-catch
+else
     using PlotlyJS
 end
 
